@@ -2,28 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Radar ESP32 Config</title>
+  <title>ESP32 I2C → MQTT Config</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="/styles.css" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-  <header>
-    <h1>Radar ESP32</h1>
+  <header class="hero">
+    <h1>Device Configuration</h1>
     <nav>
       <a href="/">Dashboard</a>
-      <a class="active" href="/config.html">Config</a>
+      <a href="/config.html">Config</a>
     </nav>
-    <div id="status">
-      <span id="ip">IP: ...</span>
-    </div>
   </header>
 
-  <main>
+  <main class="container">
     <section class="card">
       <h2>Wi‑Fi</h2>
       <form id="wifi-form" class="grid">
         <label>SSID
-          <input type="text" id="ssid" placeholder="Your Wi‑Fi SSID">
+          <input type="text" id="ssid" placeholder="YourWiFi">
         </label>
         <label>Password
           <input type="password" id="wifipass" placeholder="Leave blank to keep unchanged">
@@ -60,6 +57,9 @@
         </label>
         <label>SCL Pin
           <input type="number" id="sclPin" min="0" max="39" required>
+        </label>
+        <label>I2C Device Address
+          <input type="text" id="i2cAddr" placeholder="0x56">
         </label>
         <label>EN_LED Input Pin
           <input type="number" id="digitalPin" min="0" max="39" required>

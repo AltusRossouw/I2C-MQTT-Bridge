@@ -58,6 +58,9 @@ struct AppConfig {
   uint8_t rgbGPin = 32; // GPIO34 is input-only; using 32 by default
   uint8_t rgbBPin = 33;
   bool rgbActiveLow = false; // set true for common-anode LEDs
+
+  // I2C device address (start address)
+  uint8_t i2cAddr = RADAR_I2C_ADDR;
 };
 
 AppConfig config;
@@ -155,6 +158,8 @@ void loadConfig() {
   config.rgbGPin = prefs.getUChar("gpin", 32); // default 32 (not 34)
   config.rgbBPin = prefs.getUChar("bpin", 33);
   config.rgbActiveLow = prefs.getBool("rgbInv", false);
+  // I2C address
+  config.i2cAddr = prefs.getUChar("i2cAddr", RADAR_I2C_ADDR);
   prefs.end();
 
   if (config.mqttBaseTopic.isEmpty()) {
@@ -170,6 +175,7 @@ void loadConfig() {
   Serial.printf("RGB: enable=%s R=%u G=%u B=%u activeLow=%s\n",
                 config.rgbEnable ? "true" : "false", config.rgbRPin, config.rgbGPin, config.rgbBPin,
                 config.rgbActiveLow ? "true" : "false");
+  Serial.printf("I2C device address: 0x%02X\n", config.i2cAddr);
 }
 
 void saveConfig(const AppConfig &c) {
@@ -193,6 +199,8 @@ void saveConfig(const AppConfig &c) {
   prefs.putUChar("gpin", c.rgbGPin);
   prefs.putUChar("bpin", c.rgbBPin);
   prefs.putBool("rgbInv", c.rgbActiveLow);
+  // I2C address
+  prefs.putUChar("i2cAddr", c.i2cAddr);
   prefs.end();
 }
 
@@ -279,7 +287,7 @@ bool writeRegisterValue(const RegisterDef &def, uint32_t value) {
   for (uint8_t i = 0; i < def.length; i++) {
     buf[i] = (uint8_t)((value >> (8 * i)) & 0xFF);
   }
-  return writeRegisterRaw(RADAR_I2C_ADDR, def.address, buf, def.length);
+  return writeRegisterRaw(config.i2cAddr, def.address, buf, def.length);
 }
 
 // Load register list from /registers.txt
@@ -344,7 +352,7 @@ bool loadRegistersFromFS() {
 
 uint32_t readRegisterValue(const RegisterDef &def, bool &ok) {
   uint8_t buf[4] = {0};
-  ok = readRegisterRaw(RADAR_I2C_ADDR, def.address, buf, def.length);
+  ok = readRegisterRaw(config.i2cAddr, def.address, buf, def.length);
   if (!ok) return 0;
 
   // Assemble little-endian into 32-bit
@@ -682,7 +690,7 @@ void publishStateSnapshot() {
   mqtt.publish(topic.c_str(), payload.c_str(), false);
 
   // Also publish RGB state separately
-  publishRgbState(true); // ws only
+  publishRgbState(true);  // ws only
   publishRgbState(false); // mqtt+ws
 }
 
@@ -866,7 +874,7 @@ void onMqttMessage(char* topic, uint8_t* payload, unsigned int length) {
   } else {
     // Unknown register -> attempt 1 byte write
     uint8_t b = (uint8_t)(value & 0xFF);
-    ok = writeRegisterRaw(RADAR_I2C_ADDR, addr, &b, 1);
+    ok = writeRegisterRaw(config.i2cAddr, addr, &b, 1);
   }
 
   if (ok) {
@@ -1079,6 +1087,8 @@ void setupWebServer() {
     doc["digitalPin"] = config.digitalPin;
     doc["digitalPullup"] = config.digitalPullup;
     doc["pwmPin"] = config.pwmPin;
+    // I2C address
+    doc["i2cAddr"] = config.i2cAddr;
     // RGB
     JsonObject rgb = doc["rgb"].to<JsonObject>();
     rgb["enable"] = config.rgbEnable;
@@ -1125,6 +1135,12 @@ void setupWebServer() {
       if (!doc["digitalPin"].isNull()) newCfg.digitalPin = (uint8_t)doc["digitalPin"].as<uint8_t>();
       if (!doc["digitalPullup"].isNull()) newCfg.digitalPullup = doc["digitalPullup"].as<bool>();
       if (!doc["pwmPin"].isNull()) newCfg.pwmPin = (uint8_t)doc["pwmPin"].as<uint8_t>();
+      // I2C address update
+      if (!doc["i2cAddr"].isNull()) {
+        uint32_t a = doc["i2cAddr"].as<uint32_t>();
+        if (a > 127) a = 127;
+        newCfg.i2cAddr = (uint8_t)a;
+      }
       // RGB updates
       if (!doc["rgb"].isNull()) {
         JsonVariant rgb = doc["rgb"];
