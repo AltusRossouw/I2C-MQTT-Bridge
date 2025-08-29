@@ -102,7 +102,7 @@ You can use Arduino IDE or PlatformIO. Ensure you also upload the data (web UI f
 - Once connected to your Wi‑Fi, find the device IP from your router or mDNS (you can also read `<base>ip` on MQTT after it connects).
 
 Open the configuration UI at:
-- http://<device-ip>/config.html
+- http://192.168.4.1/config.html
 
 ---
 
