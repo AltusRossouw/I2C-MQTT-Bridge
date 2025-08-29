@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Radar ESP32 Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/styles.css" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <h1>Radar ESP32</h1>
+    <nav>
+      <a href="/">Dashboard</a>
+      <a href="/config.html">Config</a>
+    </nav>
+    <div id="status">
+      <span id="wifi">WiFi: ...</span>
+      <span id="ip">IP: ...</span>
+      <span id="mqtt">MQTT: ...</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Signals</h2>
+      <div class="kv">
+        <div><span>EN_LED_state</span><strong id="enled">...</strong></div>
+        <div><span>PWM Duty</span><strong id="pwmDuty">...</strong></div>
+        <div><span>PWM Frequency</span><strong id="pwmHz">...</strong></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>RGB LED</h2>
+      <div class="rgb">
+        <label>Color
+          <input type="color" id="rgbColor" value="#000000">
+        </label>
+        <button id="setRgb" type="button">Set</button>
+      </div>
+      <small class="hint">Tip: You can also set via MQTT at &lt;base&gt;rgb/set with {"color":"#RRGGBB"} or {"r":..,"g":..,"b":..}</small>
+    </section>
+
+    <section class="card">
+      <h2>Registers</h2>
+      <div id="registers"></div>
+    </section>
+  </main>
+
+  <script src="/script.js"></script>
+</body>
+</html>

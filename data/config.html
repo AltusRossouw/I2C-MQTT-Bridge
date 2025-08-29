@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Radar ESP32 Config</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="/styles.css" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <h1>Radar ESP32</h1>
+    <nav>
+      <a href="/">Dashboard</a>
+      <a class="active" href="/config.html">Config</a>
+    </nav>
+    <div id="status">
+      <span id="ip">IP: ...</span>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Wi‑Fi</h2>
+      <form id="wifi-form" class="grid">
+        <label>SSID
+          <input type="text" id="ssid" placeholder="Your Wi‑Fi SSID">
+        </label>
+        <label>Password
+          <input type="password" id="wifipass" placeholder="Leave blank to keep unchanged">
+        </label>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>MQTT</h2>
+      <form id="mqtt-form" class="grid">
+        <label>Host
+          <input type="text" id="mqttHost" placeholder="broker.local">
+        </label>
+        <label>Port
+          <input type="number" id="mqttPort" min="1" max="65535" value="1883">
+        </label>
+        <label>Username
+          <input type="text" id="mqttUser" placeholder="optional">
+        </label>
+        <label>Password
+          <input type="password" id="mqttPass" placeholder="Leave blank to keep unchanged">
+        </label>
+        <label>Base Topic
+          <input type="text" id="mqttBaseTopic" placeholder="e.g. radar/ABC123/">
+        </label>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Pin Configuration</h2>
+      <form id="gpio-form" class="grid">
+        <label>SDA Pin
+          <input type="number" id="sdaPin" min="0" max="39" required>
+        </label>
+        <label>SCL Pin
+          <input type="number" id="sclPin" min="0" max="39" required>
+        </label>
+        <label>EN_LED Input Pin
+          <input type="number" id="digitalPin" min="0" max="39" required>
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" id="digitalPullup">
+          Use internal pull‑up on EN_LED input
+        </label>
+        <label>PWM Input Pin
+          <input type="number" id="pwmPin" min="0" max="39" required>
+        </label>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>RGB LED</h2>
+      <form id="rgb-form" class="grid">
+        <label>Enable RGB
+          <input type="checkbox" id="rgbEnable">
+        </label>
+        <label>Red Pin
+          <input type="number" id="rgbRPin" min="0" max="39" required>
+        </label>
+        <label>Green Pin
+          <input type="number" id="rgbGPin" min="0" max="39" required>
+        </label>
+        <label>Blue Pin
+          <input type="number" id="rgbBPin" min="0" max="39" required>
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" id="rgbActiveLow">
+          Active‑Low (common‑anode)
+        </label>
+        <div class="hint" style="grid-column:1/-1">
+          Note: GPIO34–39 are input‑only and cannot drive LEDs. Prefer pins like 23, 32, 33.
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Registers File (registers.txt)</h2>
+      <div class="stack">
+        <textarea id="registersText" rows="14" spellcheck="false" placeholder="# name, 0xADDR, length(1..4)"></textarea>
+        <div class="actions">
+          <button id="saveRegisters" type="button">Save registers.txt</button>
+          <button id="reloadRegisters" type="button" class="secondary">Reload from device</button>
+          <span class="hint">Changes apply immediately after save.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Save Configuration</h2>
+      <div class="actions">
+        <button id="saveConfig" type="button">Save & Reboot</button>
+        <span class="hint">Device will reboot to apply changes.</span>
+      </div>
+    </section>
+  </main>
+
+  <script src="/config.js"></script>
+</body>
+</html>

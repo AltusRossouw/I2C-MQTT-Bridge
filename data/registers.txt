@@ -1,0 +1,41 @@
+# name, 0xADDR, length(1..4)
+# Based on mqtt_sensor_monitor.ino which reads all registers as 16-bit (2 bytes).
+# If any register is truly 8-bit on your device, you can change its length to 1.
+
+app_info.product,0x00,2
+app_info.major,0x01,2
+app_info.minor,0x02,2
+app_info.patch,0x03,2
+
+lib_info.library,0x05,2
+lib_info.major,0x06,2
+lib_info.minor,0x07,2
+lib_info.patch,0x08,2
+
+MOTION::freq,0x10,2
+MOTION::energy.variance.slow_decay_var.value_integer,0x11,2
+MOTION::energy.threshold,0x12,2
+ALS::dbg_theLux,0x13,2
+UI::config0,0x14,2
+UI::config1,0x15,2
+UI::config2,0x16,2
+
+config.ui.als_turnOff_minThreshold,0x20,2
+config.ui.motionPWM,0x21,2
+config.ui.alsPWM,0x22,2
+config.pxs.resMirrorIndeIndex,0x23,2
+config.motion.hysteresis_percentage,0x24,2
+config.cap_switch.auto_capswitch,0x25,2
+config.cap_switch.switch_cap,0x26,2
+
+config.tuning.energy_threshold_offset_default,0x30,2
+config.tuning.energy_divider,0x31,2
+config.tuning.energy_multiplier,0x32,2
+config.tuning.on_duration_default,0x33,2
+config.tuning.time_divider,0x34,2
+config.tuning.time_multiplier,0x35,2
+config.tuning.als_turnOn_threshold_default,0x36,2
+config.tuning.als_divider,0x37,2
+config.tuning.als_multiplier,0x38,2
+config.tuning.number_of_samples,0x39,2
+config.tuning.continuous_sampling,0x3A,2
